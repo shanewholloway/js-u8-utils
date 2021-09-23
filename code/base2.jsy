@@ -1,4 +1,4 @@
-const _lut_u8b2 = Array.from @ Array(256),
+const _lut_u8b2 = /* #__PURE__ */ Array.from @ Array(256),
   (_, v) => v.toString(2).padStart(8, '0')
 
 export function u8_to_base2(u8, sep) ::
