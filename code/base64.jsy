@@ -6,9 +6,10 @@
   import { u8_to_base64 } from './web/base64.jsy'
   export * from './web/base64.jsy'
 
-export function u8_to_base64url(u8) ::
-  return u8_to_base64(u8)
-    .replace(/\+/g, '-')
-    .replace(/\//g, '_')
-    .replace(/=/g, '')
+export const u8_to_base64url = /* #__PURE__ */ (()=>{
+  let s = {'+':'-','/':'_','=':''}
+  let m = c => s[c]
+  let rx = /[+=\/]/g
+  return u8 => u8_to_base64(u8).replace(rx, m)
+})();
 
