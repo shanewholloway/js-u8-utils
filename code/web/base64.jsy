@@ -11,7 +11,8 @@ export function base64_to_u8(str_b64) ::
     u8[i] = sz.charCodeAt(i)
   return u8
 
-export async function blob_to_dataURL(blob) ::
+export async function blob_to_dataurl(blob) ::
+  blob = await blob
   let rdr = new FileReader()
   await new Promise @\ onload, onerror ::
     rdr.onload = onload
