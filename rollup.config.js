@@ -30,6 +30,7 @@ add_jsy('base2')
 add_jsy('hex')
 add_jsy('base64')
 add_jsy('utf8')
+add_jsy('json')
 add_jsy('random', {skip_generic: true})
 add_jsy('buffer')
 

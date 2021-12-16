@@ -1,0 +1,6 @@
+import {u8_to_utf8, utf8_to_u8} from './utf8.jsy'
+
+export const u8_json_codec = @{}
+  encode: obj => utf8_to_u8(JSON.stringify(obj))
+  decode: u8 => JSON.parse(u8_to_utf8(u8))
+ 

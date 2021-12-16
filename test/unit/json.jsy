@@ -1,0 +1,35 @@
+const { assert } = require('chai')
+const { u8_json_codec } = require('u8-utils')
+
+describe @ 'u8_json_codec', @=> ::
+  const test_cases = @[]
+    @[] {}, new Uint8Array @# 123, 125
+    @[] [], new Uint8Array @# 91, 93
+    @[] 'a string', new Uint8Array @# 34,  97,  32, 115, 116, 114, 105, 110, 103,  34
+    @[] 1942, new Uint8Array @# 49, 57, 52, 50
+    @[] 3.141592, new Uint8Array @# 51, 46, 49, 52, 49, 53, 57, 50
+    @[] true, new Uint8Array @# 116, 114, 117, 101
+    @[] false, new Uint8Array @# 102, 97, 108, 115, 101
+    @[] null, new Uint8Array @# 110, 117, 108, 108
+
+    @[] {json_literals: [true, false, null, 1942, 3.141592, 'string']}, new Uint8Array @# 123,  34, 106, 115, 111, 110,  95, 108, 105, 116, 101, 114,  97, 108, 115,  34,  58,  91, 116, 114, 117, 101,  44, 102,  97, 108, 115, 101,  44, 110, 117, 108, 108,  44,  49,  57,  52,  50,  44,  51, 46,  49,  52,  49,  53,  57,  50,  44,  34, 115, 116, 114, 105, 110, 103,  34,  93, 125
+
+    @[] {utf8_supported: ['ü', '水', '𐅑']}, new Uint8Array @# 123,  34, 117, 116, 102,  56,  95, 115, 117, 112, 112, 111, 114, 116, 101, 100, 34,  58,  91,  34, 195, 188,  34,  44, 34, 230, 176, 180,  34,  44,  34, 240, 144, 133, 145,  34,  93, 125
+
+
+  for const [tc_obj, tc_u8] of test_cases ::
+
+    describe @ `with "${JSON.stringify(tc_obj)}"`, @=> ::
+      it @ `encode`, @=> ::
+        let u8 = u8_json_codec.encode(tc_obj)
+        assert.deepEqual(u8, tc_u8)
+
+      it @ `decode`, @=> ::
+        let rt_obj = u8_json_codec.decode(tc_u8)
+        assert.deepEqual(rt_obj, tc_obj)
+
+      it @ `roundtrip`, @=> ::
+        let u8 = u8_json_codec.encode(tc_obj)
+        let rt_obj = u8_json_codec.decode(u8)
+        assert.deepEqual(rt_obj, tc_obj)
+
