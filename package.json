@@ -1,6 +1,6 @@
 {
   "name": "u8-utils",
-  "version": "0.3.12",
+  "version": "0.3.13",
   "description": "Uint8Array + UTF8 string utility library for NodeJS and the Web",
   "license": "BSD-2-Clause",
   "author": "Shane Holloway <shane.holloway@ieee.org>",
@@ -29,7 +29,9 @@
       "require": "./cjs/index.cjs"
     }
   },
-  "workspaces": ["test"],
+  "workspaces": [
+    "test"
+  ],
   "devDependencies": {
     "rollup": "^2.61.1",
     "rollup-plugin-jsy": "^1.7.3",
