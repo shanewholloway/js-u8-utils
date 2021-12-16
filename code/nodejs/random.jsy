@@ -1,9 +1,9 @@
-const { randomBytes, randomFillSync } = require('crypto')
+import { randomFillSync } from 'node:crypto'
 
 export function u8_random(byteLength) ::
-  return Uint8Array.from @
-    randomBytes @ byteLength
+  return randomFillSync @
+    new Uint8Array(byteLength)
 
 export function u8_randomFill(u8) ::
-  randomFillSync(u8)
-  return u8
+  return randomFillSync(u8)
+

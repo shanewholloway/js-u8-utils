@@ -29,10 +29,10 @@
       "require": "./cjs/index.cjs"
     }
   },
-  "dependencies": {},
+  "workspaces": ["test"],
   "devDependencies": {
     "rollup": "^2.61.1",
-    "rollup-plugin-jsy-lite": "^1.7.3",
+    "rollup-plugin-jsy": "^1.7.3",
     "rollup-plugin-terser": "^7.0.2"
   },
   "scripts": {

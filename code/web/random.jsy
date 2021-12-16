@@ -1,8 +1,7 @@
 export function u8_random(byteLength) ::
-  const u8 = new Uint8Array(byteLength)
-  crypto.getRandomValues(u8)
-  return u8
+  return crypto.getRandomValues @
+    new Uint8Array(byteLength)
 
 export function u8_randomFill(u8) ::
-  crypto.getRandomValues(u8)
-  return u8
+  return crypto.getRandomValues(u8)
+

@@ -1,4 +1,4 @@
-import rpi_jsy from 'rollup-plugin-jsy-lite'
+import rpi_jsy from 'rollup-plugin-jsy'
 import { terser as rpi_terser } from 'rollup-plugin-terser'
 
 import pkg from './package.json'
@@ -8,7 +8,7 @@ const configs = []
 export default configs
 
 const sourcemap = true
-const external = []
+const external = id => /^\w+:/.test(id)
 
 const plugins = []
 const plugins_generic = [
@@ -41,7 +41,7 @@ function add_jsy(src_name, opt={}) {
   if (plugins_generic && !opt.skip_generic)
     configs.push({
       input: `code/${src_name}.jsy`,
-      plugins: plugins_generic,
+      plugins: plugins_generic, external,
       output: { file: `esm/${src_name}.mjs`, format: 'es', sourcemap }})
 
   if (plugins_nodejs)
