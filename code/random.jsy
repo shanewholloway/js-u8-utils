@@ -6,16 +6,15 @@
 
 let _u8_randomFill = /* #__PURE__ */ 
   'undefined' !== typeof crypto
-    ? z => crypto.getRandomValues(z)
-    : import('node:crypto').then @ m =>
-        _u8_randomFill = m.randomFillSync
+    ? crypto.getRandomValues.bind(crypto)
+    : import('node:crypto').then(m => m.randomFillSync)
 
 export async function u8_randomFill_p(z) ::
   if 'function' !== typeof _u8_randomFill ::
-    await _u8_randomFill
+    _u8_randomFill = await _u8_randomFill
   return _u8_randomFill(z)
 
-export function u8_random_p(byteLength) ::
-  return u8_randomFill_p @
+export const u8_random_p = (byteLength) =>
+  u8_randomFill_p @
     new Uint8Array(byteLength)
 
