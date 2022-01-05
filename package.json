@@ -1,6 +1,6 @@
 {
   "name": "u8-utils",
-  "version": "0.3.15",
+  "version": "0.3.16",
   "description": "Uint8Array + UTF8 string utility library for NodeJS and the Web",
   "license": "BSD-2-Clause",
   "author": "Shane Holloway <shane.holloway@ieee.org>",
