@@ -42,7 +42,10 @@ function add_jsy(src_name, opt={}) {
     configs.push({
       input: `code/${src_name}.jsy`,
       plugins: plugins_generic, external,
-      output: { file: `esm/${src_name}.mjs`, format: 'es', sourcemap }})
+      output: [
+        { file: `esm/${src_name}.mjs`, format: 'es', sourcemap },
+        { file: `esm/${src_name}.js`, format: 'es', sourcemap },
+      ]})
 
   if (plugins_nodejs)
     configs.push({

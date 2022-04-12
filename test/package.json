@@ -8,11 +8,10 @@
   "devDependencies": {
     "@rollup/plugin-node-resolve": "^13.1.1",
     "benchmark": "^2.1.4",
-    "rollup": "^2.61.1",
-    "rollup-plugin-jsy": "^1.7.3"
+    "rollup": "^2.70.1",
+    "rollup-plugin-jsy": "^1.7.4"
   },
   "scripts": {
-    "prebuild": "test -d ./node_modules || npm -s install",
     "build": "rollup --config",
     "clean": "rm ./__unittest.*",
     "watch": "npm -s run build -- --watch",
