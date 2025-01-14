@@ -1,5 +1,6 @@
-const { assert } = require('chai')
-const { u8_to_utf8, utf8_to_u8, utf8_to_u8_nfkc } = require('u8-utils')
+import {describe, it, assert} from '#test/bdd'
+
+import { u8_to_utf8, utf8_to_u8, utf8_to_u8_nfkc } from 'u8-utils'
 
 describe @ 'utf8', @=> ::
   const test_cases = @[]

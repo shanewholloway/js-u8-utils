@@ -1,5 +1,6 @@
-const { assert } = require('chai')
-const { u8_json_codec } = require('u8-utils')
+import {describe, it, assert} from '#test/bdd'
+
+import { u8_json_codec } from 'u8-utils'
 
 describe @ 'u8_json_codec', @=> ::
   const test_cases = @[]

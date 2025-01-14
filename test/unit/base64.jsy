@@ -1,5 +1,9 @@
-const { assert } = require('chai')
-const { u8_to_base64, u8_to_base64url, base64_to_u8 } = require('u8-utils')
+import {describe, it, assert} from '#test/bdd'
+
+#IF PLAT_NODEJS
+  import { u8_to_base64, u8_to_base64url, base64_to_u8 } from 'u8-utils/node'
+#ELIF PLAT_WEB
+  import { u8_to_base64, u8_to_base64url, base64_to_u8 } from 'u8-utils/web'
 
 describe @ 'base64', @=> ::
   const tc_u8 = new Uint8Array([75,245,231,251,102,40,5,58,69,131,9,108,85,174,67,161,207,139,2,3])

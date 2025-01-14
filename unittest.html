@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang='en'>
+<head>
+<meta charset="utf-8">
+<title>U8 Utils Mocha Tests</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<link rel="stylesheet" href="https://unpkg.com/mocha@10/mocha.css" />
+<script src="https://unpkg.com/mocha@10/mocha.js"></script>
+
+<script type="importmap">{
+"imports": {
+    "u8-utils": "./esm/web/index.js"
+  , "u8-utils/web": "./esm/web/index.js"
+  , "#test/bdd": "./platform/web-bdd-mocha.js"
+}}</script>
+
+</head><body>
+
+<div id="mocha"></div>
+
+<script type=module>
+  mocha.setup({ui: 'bdd'}).checkLeaks()
+
+  await import('./dist/test-web/unittest.js')
+
+  mocha.run()
+  console.log('End')
+</script>

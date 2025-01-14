@@ -1,5 +1,6 @@
-const { assert } = require('chai')
-const { as_u8_buffer, u8_concat } = require('u8-utils')
+import {describe, it, assert} from '#test/bdd'
+
+import { as_u8_buffer, u8_concat } from 'u8-utils'
 
 describe @ 'buffer', @=> ::
   const tc_u8_list = @[]

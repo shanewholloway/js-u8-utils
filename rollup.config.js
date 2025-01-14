@@ -1,14 +1,14 @@
 import rpi_jsy from 'rollup-plugin-jsy'
-import { terser as rpi_terser } from 'rollup-plugin-terser'
+import rpi_terser from '@rollup/plugin-terser'
 
-import pkg from './package.json'
+import pkg from './package.json' with {type: 'json'}
 const pkg_name = pkg.name.replace('-', '_')
 
 const configs = []
 export default configs
 
 const sourcemap = true
-const external = id => /^\w+:/.test(id)
+const external = id => /^\w+:|^#/.test(id) || id.startsWith(pkg.name)
 
 const plugins = []
 const plugins_generic = [
@@ -33,6 +33,11 @@ add_jsy('utf8')
 add_jsy('json')
 add_jsy('random')
 add_jsy('buffer')
+
+configs.push(
+  { input: 'test/unittest.jsy', external, plugins: plugins_nodejs, output: { dir: 'dist/test-node' }, },
+  { input: 'test/unittest.jsy', external, plugins: plugins_web, output: { dir: 'dist/test-web' }, },
+)
 
 
 function add_jsy(src_name, opt={}) {
