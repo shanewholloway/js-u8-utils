@@ -1,7 +1,0 @@
-export function u8_random(byteLength) ::
-  return crypto.getRandomValues @
-    new Uint8Array(byteLength)
-
-export function u8_randomFill(u8) ::
-  return crypto.getRandomValues(u8)
-

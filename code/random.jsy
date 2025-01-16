@@ -1,21 +1,13 @@
-#IF PLAT_NODEJS
-  export * from './nodejs/random.jsy'
-
-#ELIF PLAT_WEB
-  export * from './web/random.jsy'
-
-let _u8_randomFill = /* #__PURE__ */ 
-  'undefined' !== typeof crypto
-    ? crypto.getRandomValues.bind(crypto)
-    : import('node:crypto')
-        .then(m => m.randomFillSync)
-
-export async function u8_randomFill_p(z) ::
-  if 'function' !== typeof _u8_randomFill ::
-    _u8_randomFill = await _u8_randomFill
-  return _u8_randomFill(z)
-
-export const u8_random_p = (byteLength) =>
-  u8_randomFill_p @
+export function u8_random(byteLength) ::
+  return crypto.getRandomValues @
     new Uint8Array(byteLength)
+
+export function u8_randomFill(u8) ::
+  return crypto.getRandomValues(u8)
+
+export const u8_randomFill_p = async z =>
+  u8_randomFill(await z)
+
+export const u8_random_p = async byteLength =>
+  u8_random(await byteLength)
 

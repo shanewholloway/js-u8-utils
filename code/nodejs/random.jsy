@@ -1,9 +1,0 @@
-import { randomFillSync } from 'node:crypto'
-
-export function u8_random(byteLength) ::
-  return randomFillSync @
-    new Uint8Array(byteLength)
-
-export function u8_randomFill(u8) ::
-  return randomFillSync(u8)
-
