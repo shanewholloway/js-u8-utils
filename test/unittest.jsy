@@ -1,6 +1,7 @@
 import './unit/base2.jsy'
 import './unit/hex.jsy'
 import './unit/base64.jsy'
+import './unit/base64_codec.jsy'
 import './unit/utf8.jsy'
 import './unit/json.jsy'
 import './unit/random.jsy'
