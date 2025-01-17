@@ -37,14 +37,22 @@
       "web": "./platform/web-bdd-mocha.js"
     }
   },
-  "engines" : {
-    "node" : ">=18.0.0"
+  "engines": {
+    "node": ">=18.0.0"
   },
   "devDependencies": {
     "@rollup/plugin-terser": "^0.4.4",
     "qsrv": "^0.2.8",
     "rollup": "^4.30.1",
     "rollup-plugin-jsy": "^1.9.2"
+  },
+  "peerDependencies": {
+    "vite": "^6.0.7",
+    "vitest": "^3.0.1"
+  },
+  "peerDependenciesMeta": {
+    "vite": {"optional": true},
+    "vitest": {"optional": true}
   },
   "scripts": {
     "clean": "rm -rf ./cjs/* ./esm/* ./umd/* ./dist/*",

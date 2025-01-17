@@ -33,6 +33,19 @@ describe @ 'Base64url Codec', @::
     @[] 'Ma', 'TWE'
     @[] 'M', 'TQ'
 
+function _readable_from_vec(vec) {
+  if (ReadableStream.from)
+    return ReadableStream.from(vec)
+
+  vec = Array.from(vec).reverse() 
+  return new ReadableStream({
+    pull(ctl) {
+      if (0 < vec.length)
+        ctl.enqueue(vec.pop())
+      else ctl.close()
+    },
+  })
+}
 
 function base64_u8_testsuite(urlsafe, test_tuples) ::
   const base64name = urlsafe ? 'base64url' : 'base64'
@@ -40,7 +53,7 @@ function base64_u8_testsuite(urlsafe, test_tuples) ::
   for let [known_u8, known_b64] of test_tuples ::
 
     test @ `binary ${base64name} encode ${JSON.stringify(known_u8)} == ${JSON.stringify(known_b64)}`, @::>
-      let stream = ReadableStream.from([Uint8Array.from(known_u8)])
+      let stream = _readable_from_vec([Uint8Array.from(known_u8)])
         .pipeThrough(new U8Base64Encoder(urlsafe))
         .pipeThrough(new TextDecoderStream())
 
@@ -50,7 +63,7 @@ function base64_u8_testsuite(urlsafe, test_tuples) ::
       assert.strictEqual(output_b64, known_b64)
 
     test @ `binary ${base64name} decode ${JSON.stringify(known_b64)} == ${JSON.stringify(known_u8)}`, @::>
-      let stream = ReadableStream.from([known_b64])
+      let stream = _readable_from_vec([known_b64])
         .pipeThrough(new U8Base64Decoder(urlsafe))
 
       let out = (await Array.fromAsync(stream)).flatMap(e => [... e])
@@ -58,7 +71,7 @@ function base64_u8_testsuite(urlsafe, test_tuples) ::
 
 
     test @ `binary ${base64name} round-trip encode + decode ${JSON.stringify(known_u8)}`, @::>
-      let stream = ReadableStream.from([Uint8Array.from(known_u8)])
+      let stream = _readable_from_vec([Uint8Array.from(known_u8)])
         .pipeThrough(new U8Base64Encoder(urlsafe))
         .pipeThrough(new U8Base64Decoder(urlsafe))
 
@@ -67,7 +80,7 @@ function base64_u8_testsuite(urlsafe, test_tuples) ::
 
 
     test @ `binary ${base64name} round-trip decode + encode ${JSON.stringify(known_b64)}`, @::>
-      let stream = ReadableStream.from([known_b64])
+      let stream = _readable_from_vec([known_b64])
         .pipeThrough(new U8Base64Decoder(urlsafe))
         .pipeThrough(new U8Base64Encoder(urlsafe))
         .pipeThrough(new TextDecoderStream())
@@ -84,7 +97,7 @@ function base64_string_testsuite(urlsafe, test_tuples) ::
   for let [known_sz, known_b64] of test_tuples ::
 
     test @ `${base64name} encode ${JSON.stringify(known_sz)} == ${JSON.stringify(known_b64)}`, @::>
-      let stream = ReadableStream.from([known_sz])
+      let stream = _readable_from_vec([known_sz])
         .pipeThrough(new TextEncoderStream())
         .pipeThrough(new U8Base64Encoder(urlsafe))
         .pipeThrough(new TextDecoderStream())
@@ -96,7 +109,7 @@ function base64_string_testsuite(urlsafe, test_tuples) ::
 
 
     test @ `${base64name} decode ${JSON.stringify(known_b64)} == ${JSON.stringify(known_sz)}`, @::>
-      let stream = ReadableStream.from([known_b64])
+      let stream = _readable_from_vec([known_b64])
         .pipeThrough(new TextEncoderStream())
         .pipeThrough(new U8Base64Decoder(urlsafe))
         .pipeThrough(new TextDecoderStream())
@@ -108,7 +121,7 @@ function base64_string_testsuite(urlsafe, test_tuples) ::
 
 
     test @ `${base64name} round-trip encode + decode ${JSON.stringify(known_sz)}`, @::>
-      let stream = ReadableStream.from([known_sz])
+      let stream = _readable_from_vec([known_sz])
         .pipeThrough(new TextEncoderStream())
         .pipeThrough(new U8Base64Encoder(urlsafe))
         .pipeThrough(new U8Base64Decoder(urlsafe))
@@ -121,7 +134,7 @@ function base64_string_testsuite(urlsafe, test_tuples) ::
 
 
     test @ `${base64name} round-trip decode + encode ${JSON.stringify(known_b64)}`, @::>
-      let stream = ReadableStream.from([known_b64])
+      let stream = _readable_from_vec([known_b64])
         .pipeThrough(new TextEncoderStream())
         .pipeThrough(new U8Base64Decoder(urlsafe))
         .pipeThrough(new U8Base64Encoder(urlsafe))
