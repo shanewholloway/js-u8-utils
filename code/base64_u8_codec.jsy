@@ -1,0 +1,66 @@
+import {_base64_u8_encoder} from './_base64_u8_encoder.jsy'
+import {_base64_u8_decoder} from './_base64_decoder.jsy'
+import {_b64_lut} from './_base64_lut.jsy'
+
+
+export function base64_u8_encoder(encode) ::
+  if ! encode?.length ::
+    encode = _b64_lut(encode).enc
+  return _base64_u8_encoder(encode)
+
+export function base64_u8_decoder(decode) ::
+  if ! decode?.length ::
+    decode = _b64_lut(decode).dec
+  return _base64_u8_decoder(decode)
+
+
+export const u8_to_u8b64 = u8 => base64_u8_encoder(false)(u8)
+export const u8b64_to_u8 = b64u8 => base64_u8_decoder(false)(b64u8)
+
+export const u8_to_u8b64url = u8 => base64_u8_encoder(true)(u8)
+export const u8b64url_to_u8 = b64u8 => base64_u8_decoder(true)(b64u8)
+
+
+export class U8Base64Encoder extends TransformStream ::
+  constructor(urlsafe_or_encode_lut, ...args) ::
+    let _fn_encode = base64_u8_encoder(urlsafe_or_encode_lut)
+    super @:
+      transform(chunk, controller) ::
+        if 1 !== chunk.BYTES_PER_ELEMENT ::
+          return controller.error(`Invalid U8 array: ${typeof chunk}`)
+
+        let u8b64_out = _fn_encode(chunk, false)
+        if null !== u8b64_out ::
+          controller.enqueue(u8b64_out)
+
+      flush(controller) ::
+        let u8b64_out = _fn_encode(null, true)
+        if null !== u8b64_out ::
+          controller.enqueue(u8b64_out)
+
+      ... args
+
+
+export class U8Base64Decoder extends TransformStream ::
+  constructor(urlsafe_or_decode_lut, ...args) ::
+    let _fn_decode = base64_u8_decoder(urlsafe_or_decode_lut)
+    super @:
+      transform(chunk, controller) ::
+        if 'string' === typeof chunk ::
+          chunk = new TextEncoder().encode(chunk)
+        if 1 !== chunk.BYTES_PER_ELEMENT ::
+          return controller.error(`Invalid U8 array: ${typeof chunk}`)
+
+        try :: var u8_out = _fn_decode(chunk)
+        catch err :: return controller.error(`${err}`)
+
+        if null != u8_out ::
+          controller.enqueue(u8_out)
+
+      flush(controller) ::
+        let u8_out = _fn_decode(null, true)
+        if null !== u8_out ::
+          controller.enqueue(u8_out)
+
+      ... args
+

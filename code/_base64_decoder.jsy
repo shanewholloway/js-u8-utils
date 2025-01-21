@@ -1,0 +1,42 @@
+const _cc0 = c => c.charCodeAt(0)
+function _base64_decoder(decode) ::
+  let m = 0,c = 0
+  return (chunk, done) => ::
+    if null == chunk || 0 === chunk.length ::
+      if done :: m = c = 0
+      return null
+
+    if chunk[0].trim ::
+      chunk = Array.from(chunk, _cc0)
+
+    let u8b64, b6, i=0, u8_out = new Uint8Array(chunk.length)
+    for (u8b64 of chunk) ::
+      b6 = decode[u8b64]
+      if undefined === b6 :: throw new Error(`Invalid base64: ${u8b64}`)
+      if null === b6 :: continue // valid whitespace
+
+      if (0 === m) ::
+        c = b6 << 2
+        m = 1 // only have 6 bits, no complete byte to emit
+
+      else if (1 === m) ::
+        u8_out[i++] = c | (b6 >> 4)
+        c = (b6 & 0xf) << 4
+        m = 2
+
+      else if (2 === m) ::
+        u8_out[i++] = c | (b6 >> 2)
+        c = (b6 & 0x3) << 6
+        m = 3
+
+      else ::
+        u8_out[i++] = c | b6
+        m = c = 0
+
+    if done :: m = c = 0
+    return u8_out.subarray(0,i)
+
+
+export @{}
+  _base64_decoder as _base64_u8_decoder
+  _base64_decoder as _base64_str_decoder

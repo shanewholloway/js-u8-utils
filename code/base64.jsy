@@ -1,15 +1,18 @@
-#IF PLAT_NODEJS
-  import { u8_to_base64 } from './nodejs/base64.jsy'
-  export * from './nodejs/base64.jsy'
+export @{}
+  u8_to_base64,
+  base64_to_u8,
 
-#ELIF PLAT_WEB
-  import { u8_to_base64 } from './web/base64.jsy'
-  export * from './web/base64.jsy'
+  u8_to_base64url,
+  base64url_to_u8,
+from './base64_str_codec.jsy'
 
-const _x_b64url = [/[+\/=]/g, c => '+'===c ? '-' : '/'===c ? '_' : '='===c ? '' : c ]
-export const as_base64url = sz =>
-  ''.replace.apply(sz, _x_b64url)
 
-export const u8_to_base64url = u8 =>
-  as_base64url(u8_to_base64(u8))
+export async function blob_to_dataurl(blob) ::
+  blob = await blob
+  let rdr = new FileReader()
+  await new Promise @\ onload, onerror ::
+    rdr.onload = onload
+    rdr.onerror = onerror
+    rdr.readAsDataURL(blob)
+  return rdr.result
 

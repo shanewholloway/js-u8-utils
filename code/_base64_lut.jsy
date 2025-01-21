@@ -1,0 +1,32 @@
+var _b64_lut_
+
+function _lut_for(v62, v63, no_pad) ::
+  let i, i_end, enc=[], dec=[]
+
+  for [i, i_end] of @[]
+        [65,  90], // 'A' .. 'Z'
+        [97, 122], // 'a' .. 'z'
+        [48, 57],  // '0' .. '9'
+    ::
+    while i <= i_end ::
+      dec[i] = enc.length
+      enc.push(i++)
+
+  for i of [9,10,13,32,61] :: dec[i] = null // ignore whitespace and equal: '\t\n\r ='
+
+  dec[enc[62] = v62] = dec[43] = dec[45] = 62 // allow mismatch decoding of '+' (base64) or '-' (base64url)
+  dec[enc[63] = v63] = dec[47] = dec[95] = 63 // allow mismatch decoding of '-' (base64) or '_' (base64url)
+
+  let enc_sz = enc.map(v => String.fromCharCode(v))
+  enc.no_pad = enc_sz.no_pad = no_pad
+  return @{} dec, enc, enc_sz
+
+
+export function _b64_lut(urlsafe) ::
+  if undefined === _b64_lut_ ::
+    _b64_lut_ = @[]
+      _lut_for(43, 47, false), // base64: '+' (char code 43) and '/' (char code 47)
+      _lut_for(45, 95, true), // base64url: '-' (char code 45) and '_' (char code 95)
+
+  return _b64_lut_[urlsafe ? 1 : 0]
+

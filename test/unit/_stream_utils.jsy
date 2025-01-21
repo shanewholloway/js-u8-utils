@@ -1,0 +1,12 @@
+export function _readable_from_vec(vec) ::
+  if ReadableStream.from ::
+    return ReadableStream.from(vec)
+
+  vec = Array.from(vec).reverse() 
+  return new ReadableStream @:
+    pull(ctl) ::
+      if 0 < vec.length ::
+        ctl.enqueue(vec.pop())
+      else :: ctl.close()
+
+
