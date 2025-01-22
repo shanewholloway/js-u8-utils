@@ -21,7 +21,7 @@
 <script type=module>
   mocha.setup({ui: 'bdd'}).checkLeaks()
 
-  await import('./dist/test-web/unittest.js')
+  await import('./esm/test/unittest.js')
 
   mocha.run()
 </script>

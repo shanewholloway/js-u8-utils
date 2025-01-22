@@ -1,6 +1,6 @@
 {
   "name": "u8-utils",
-  "version": "0.4.0-0",
+  "version": "0.4.0-1",
   "description": "Uint8Array + UTF8 string utility library for NodeJS and the Web",
   "license": "BSD-2-Clause",
   "author": "Shane Holloway <shane.holloway@ieee.org>",
@@ -19,17 +19,11 @@
     "umd/"
   ],
   "type": "module",
-  "main": "./cjs/index.cjs",
-  "module": "./esm/index.mjs",
-  "browser": "./umd/index.min.js",
+  "main": "./esm/index.js",
+  "module": "./esm/index.js",
   "exports": {
-    "./": "./",
-    "./web": "./esm/web/index.js",
-    "./node": "./esm/node/index.mjs",
-    ".": {
-      "import": "./esm/index.mjs",
-      "require": "./cjs/index.cjs"
-    }
+    "./": "./esm/",
+    ".": "./esm/index.js"
   },
   "imports": {
     "#test/bdd": {
@@ -41,25 +35,21 @@
     "node": ">=18.0.0"
   },
   "devDependencies": {
+    "@jsy-lang/nodejs": "^0.2.3",
     "@rollup/plugin-terser": "^0.4.4",
-    "qsrv": "^0.2.8",
     "rollup": "^4.30.1",
     "rollup-plugin-jsy": "^1.9.2"
   },
-  "peerDependencies": {
-    "vite": "^6.0.7",
-    "vitest": "^3.0.1"
-  },
-  "peerDependenciesMeta": {
-    "vite": {"optional": true},
-    "vitest": {"optional": true}
+  "optionalDependencies": {
+    "vite": "^6.0.11"
   },
   "scripts": {
-    "clean": "rm -rf ./cjs/* ./esm/* ./umd/* ./dist/*",
+    "clean": "rm -rf ./esm/*",
     "build": "rollup --config",
     "watch": "rollup --config --watch",
+    "serve": "vite",
     "pretest": "npm -s run build",
-    "test": "node --test dist/test-node/**",
-    "test:watch": "node --test --watch dist/test-node/**"
+    "test": "node --test esm/test/unittest.js",
+    "test:watch": "node --watch --test esm/test/unittest.js"
   }
 }

@@ -1,10 +1,6 @@
 import {describe, it, assert} from '#test/bdd'
 
-#IF PLAT_NODEJS
-  import { u8_random, u8_randomFill, u8_random_p, u8_randomFill_p } from 'u8-utils/node'
-#ELIF PLAT_WEB
-  import { u8_random, u8_randomFill, u8_random_p, u8_randomFill_p } from 'u8-utils/web'
-
+import { u8_random, u8_randomFill, u8_random_p, u8_randomFill_p } from 'u8-utils'
 import { u8_to_hex, u8_to_base64, u8_to_base64url } from 'u8-utils'
 
 describe @ 'random', @::
