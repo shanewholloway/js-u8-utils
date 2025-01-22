@@ -4,7 +4,7 @@ export @{}
 
   u8_to_base64url,
   base64url_to_u8,
-from './base64_str_codec.jsy'
+from './base64_str.jsy'
 
 
 export async function blob_to_dataurl(blob) ::

@@ -1,24 +1,4 @@
-import {_base64_u8_encoder} from './_base64_u8_encoder.jsy'
-import {_base64_u8_decoder} from './_base64_decoder.jsy'
-import {_b64_lut} from './_base64_lut.jsy'
-
-
-export function base64_u8_encoder(encode) ::
-  if ! encode?.length ::
-    encode = _b64_lut(encode).enc
-  return _base64_u8_encoder(encode)
-
-export function base64_u8_decoder(decode) ::
-  if ! decode?.length ::
-    decode = _b64_lut(decode).dec
-  return _base64_u8_decoder(decode)
-
-
-export const u8_to_u8b64 = u8 => base64_u8_encoder(false)(u8)
-export const u8b64_to_u8 = b64u8 => base64_u8_decoder(false)(b64u8)
-
-export const u8_to_u8b64url = u8 => base64_u8_encoder(true)(u8)
-export const u8b64url_to_u8 = b64u8 => base64_u8_decoder(true)(b64u8)
+import {base64_u8_encoder, base64_u8_decoder} from './base64_u8.jsy'
 
 
 export class U8Base64Encoder extends TransformStream ::
