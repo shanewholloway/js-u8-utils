@@ -1,140 +1,77 @@
-import {describe, test, it, assert} from '#test/bdd'
-import {U8Base64Encoder, U8Base64Decoder} from 'u8-utils'
+import { describe, it, assert } from '#test/bdd'
+import { utf8_to_u8, U8Base64Encoder, U8Base64Decoder } from 'u8-utils'
 import {_readable_from_vec} from './_stream_utils.jsy'
 
-describe @ 'U8 Base64 Codec', @::
-  u8base64_string_testsuite @ false, @[]
-    @[] 'Man', 'TWFu'
-    @[] 'Ma', 'TWE='
-    @[] 'M', 'TQ=='
+import base64_test_tuples from './_base64_dataset.jsy'
 
-  u8base64_string_testsuite @ false, @[]
-    @[] 'Many hands make light work.', 'TWFueSBoYW5kcyBtYWtlIGxpZ2h0IHdvcmsu'
-    @[] 'light work.', 'bGlnaHQgd29yay4='
-    @[] 'light work', 'bGlnaHQgd29yaw=='
-    @[] 'light wor', 'bGlnaHQgd29y'
-    @[] 'light wo', 'bGlnaHQgd28='
-    @[] 'light w', 'bGlnaHQgdw=='
+describe @ `U8Base64Encoder and U8Base64Decoder`, @::
+  const _as_u8 = v => v?.trim ? utf8_to_u8(v) : Uint8Array.from(v)
+  const _async_flat = async aiter => 
+    (await Array.fromAsync(aiter)).flatMap(e => [... e])
 
-  u8base64_u8_testsuite @ false, @[]
-    @[] [255], '/w=='
-    @[] [251], '+w=='
+  const assert_vec_equal = (a, b) =>
+    assert.deepEqual(Array.from(a), Array.from(b))
 
+  for let [known_u8, known_b64, known_b64url] of base64_test_tuples ::
+    known_u8 = _as_u8(known_u8)
+    known_b64 = _as_u8(known_b64)
+    known_b64url = _as_u8(known_b64url)
 
-describe @ 'U8 Base64url Codec', @::
-  u8base64_string_testsuite @ true, @[]
-    @[] 'Man', 'TWFu'
-    @[] 'Ma', 'TWE'
-    @[] 'M', 'TQ'
+    it @ `encode decode base64`, @::>
+      let stream = _readable_from_vec([known_u8])
+        .pipeThrough(new U8Base64Encoder(false))
+        .pipeThrough(new U8Base64Decoder(false))
 
-  u8base64_string_testsuite @ true, @[]
-    @[] 'Many hands make light work.', 'TWFueSBoYW5kcyBtYWtlIGxpZ2h0IHdvcmsu'
-    @[] 'light work.', 'bGlnaHQgd29yay4'
-    @[] 'light work', 'bGlnaHQgd29yaw'
-    @[] 'light wor', 'bGlnaHQgd29y'
-    @[] 'light wo', 'bGlnaHQgd28'
-    @[] 'light w', 'bGlnaHQgdw'
+      let output_u8 = await _async_flat(stream)
+      assert_vec_equal(output_u8, known_u8)
 
-  u8base64_u8_testsuite @ true, @[]
-    @[] [255], '_w'
-    @[] [251], '-w'
+    it @ `encode decode base64url`, @::>
+      let stream = _readable_from_vec([known_u8])
+        .pipeThrough(new U8Base64Encoder(true))
+        .pipeThrough(new U8Base64Decoder(true))
 
+      let output_u8 = await _async_flat(stream)
+      assert_vec_equal(output_u8, known_u8)
 
-function u8base64_u8_testsuite(urlsafe, test_tuples) ::
-  const base64name = urlsafe ? 'base64url' : 'base64'
+    it @ `encode base64`, @::>
+      let stream = _readable_from_vec([known_u8])
+        .pipeThrough(new U8Base64Encoder(false))
 
-  for let [known_u8, known_b64] of test_tuples ::
+      let output_b64 = await _async_flat(stream)
+      assert_vec_equal(output_b64, known_b64)
 
-    test @ `binary ${base64name} encode ${JSON.stringify(known_u8)} == ${JSON.stringify(known_b64)}`, @::>
-      let stream = _readable_from_vec([Uint8Array.from(known_u8)])
-        .pipeThrough(new U8Base64Encoder(urlsafe))
-        .pipeThrough(new TextDecoderStream())
+    it @ `encode base64url`, @::>
+      let stream = _readable_from_vec([known_u8])
+        .pipeThrough(new U8Base64Encoder(true))
 
-      let output_b64 = await Array.fromAsync(stream)
-      output_b64 = output_b64.join('')
+      let output_b64url = await _async_flat(stream)
+      assert_vec_equal(output_b64url, known_b64url)
 
-      assert.strictEqual(output_b64, known_b64)
-
-    test @ `binary ${base64name} decode ${JSON.stringify(known_b64)} == ${JSON.stringify(known_u8)}`, @::>
+    it @ `decode base64`, @::>
       let stream = _readable_from_vec([known_b64])
-        .pipeThrough(new U8Base64Decoder(urlsafe))
+        .pipeThrough(new U8Base64Decoder(false))
 
-      let out = (await Array.fromAsync(stream)).flatMap(e => [... e])
-      assert.deepStrictEqual(out, known_u8)
+      let output_u8 = await _async_flat(stream)
+      assert_vec_equal(output_u8, known_u8)
 
+    it @ `decode base64url`, @::>
+      let stream = _readable_from_vec([known_b64url])
+        .pipeThrough(new U8Base64Decoder(true))
 
-    test @ `binary ${base64name} round-trip encode + decode ${JSON.stringify(known_u8)}`, @::>
-      let stream = _readable_from_vec([Uint8Array.from(known_u8)])
-        .pipeThrough(new U8Base64Encoder(urlsafe))
-        .pipeThrough(new U8Base64Decoder(urlsafe))
+      let output_u8 = await _async_flat(stream)
+      assert_vec_equal(output_u8, known_u8)
 
-      let out = (await Array.fromAsync(stream)).flatMap(e => [... e])
-      assert.deepStrictEqual(out, known_u8)
-
-
-    test @ `binary ${base64name} round-trip decode + encode ${JSON.stringify(known_b64)}`, @::>
+    it @ `decode crossover b64 with b64url`, @::>
       let stream = _readable_from_vec([known_b64])
-        .pipeThrough(new U8Base64Decoder(urlsafe))
-        .pipeThrough(new U8Base64Encoder(urlsafe))
-        .pipeThrough(new TextDecoderStream())
+        .pipeThrough(new U8Base64Decoder(true))
 
-      let output_b64 = await Array.fromAsync(stream)
-      output_b64 = output_b64.join('')
+      let output_u8 = await _async_flat(stream)
+      assert_vec_equal(output_u8, known_u8)
 
-      assert.strictEqual(output_b64, known_b64)
+    it @ `decode crossover b64url with b64`, @::>
+      let stream = _readable_from_vec([known_b64url])
+        .pipeThrough(new U8Base64Decoder(false))
 
-
-function u8base64_string_testsuite(urlsafe, test_tuples) ::
-  const base64name = urlsafe ? 'base64url' : 'base64'
-
-  for let [known_sz, known_b64] of test_tuples ::
-
-    test @ `${base64name} encode ${JSON.stringify(known_sz)} == ${JSON.stringify(known_b64)}`, @::>
-      let stream = _readable_from_vec([known_sz])
-        .pipeThrough(new TextEncoderStream())
-        .pipeThrough(new U8Base64Encoder(urlsafe))
-        .pipeThrough(new TextDecoderStream())
-
-      let output_b64 = await Array.fromAsync(stream)
-      output_b64 = output_b64.join('')
-
-      assert.strictEqual(output_b64, known_b64)
-
-
-    test @ `${base64name} decode ${JSON.stringify(known_b64)} == ${JSON.stringify(known_sz)}`, @::>
-      let stream = _readable_from_vec([known_b64])
-        .pipeThrough(new TextEncoderStream())
-        .pipeThrough(new U8Base64Decoder(urlsafe))
-        .pipeThrough(new TextDecoderStream())
-
-      let output_sz = await Array.fromAsync(stream)
-      output_sz = output_sz.join('')
-
-      assert.strictEqual(output_sz, known_sz)
-
-
-    test @ `${base64name} round-trip encode + decode ${JSON.stringify(known_sz)}`, @::>
-      let stream = _readable_from_vec([known_sz])
-        .pipeThrough(new TextEncoderStream())
-        .pipeThrough(new U8Base64Encoder(urlsafe))
-        .pipeThrough(new U8Base64Decoder(urlsafe))
-        .pipeThrough(new TextDecoderStream())
-
-      let output_sz = await Array.fromAsync(stream)
-      output_sz = output_sz.join('')
-
-      assert.strictEqual(output_sz, known_sz)
-
-
-    test @ `${base64name} round-trip decode + encode ${JSON.stringify(known_b64)}`, @::>
-      let stream = _readable_from_vec([known_b64])
-        .pipeThrough(new TextEncoderStream())
-        .pipeThrough(new U8Base64Decoder(urlsafe))
-        .pipeThrough(new U8Base64Encoder(urlsafe))
-        .pipeThrough(new TextDecoderStream())
-
-      let output_b64 = await Array.fromAsync(stream)
-      output_b64 = output_b64.join('')
-
-      assert.strictEqual(output_b64, known_b64)
+      let output_u8 = await _async_flat(stream)
+      assert_vec_equal(output_u8, known_u8)
 

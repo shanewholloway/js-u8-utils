@@ -1,9 +1,9 @@
-export function u8_to_utf8(u8) ::
-  return new TextDecoder('utf-8').decode @ u8
+export const u8_to_utf8 = u8 =>
+  new TextDecoder('utf-8').decode(u8)
 
-export function utf8_to_u8(utf8) ::
-  return new TextEncoder('utf-8').encode @ utf8
+export const utf8_to_u8 = utf8 =>
+  new TextEncoder('utf-8').encode(utf8)
 
-export function utf8_to_u8_nfkc(utf8) ::
-  return utf8_to_u8 @ utf8.normalize('NFKC')
+export const utf8_to_u8_nfkc = utf8 =>
+  utf8_to_u8(utf8.normalize('NFKC'))
 

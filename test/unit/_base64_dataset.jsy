@@ -1,0 +1,24 @@
+export const base64_string_test_tuples = @[]
+  @[] 'Man', 'TWFu', 'TWFu', 
+  @[] 'Ma', 'TWE=', 'TWE'
+  @[] 'M', 'TQ==', 'TQ'
+  @[] 'Many hands make light work.', 'TWFueSBoYW5kcyBtYWtlIGxpZ2h0IHdvcmsu', 'TWFueSBoYW5kcyBtYWtlIGxpZ2h0IHdvcmsu'
+  @[] 'light work.', 'bGlnaHQgd29yay4=', 'bGlnaHQgd29yay4'
+  @[] 'light work', 'bGlnaHQgd29yaw==', 'bGlnaHQgd29yaw'
+  @[] 'light wor', 'bGlnaHQgd29y', 'bGlnaHQgd29y'
+  @[] 'light wo', 'bGlnaHQgd28=', 'bGlnaHQgd28'
+  @[] 'light w', 'bGlnaHQgdw==', 'bGlnaHQgdw'
+
+export const base64_binary_test_tuples = @[]
+  @[] [255], '/w==', '_w'
+  @[] [251], '+w==', '-w'
+
+  @[] [75,245,231,251,102,40,5,58,69,131,9,108,85,174,67,161,207,139,2,3],
+      'S/Xn+2YoBTpFgwlsVa5Doc+LAgM=',
+      'S_Xn-2YoBTpFgwlsVa5Doc-LAgM',
+
+export const base64_test_tuples = @[]
+  ... base64_string_test_tuples,
+  ... base64_binary_test_tuples,
+
+export default base64_test_tuples

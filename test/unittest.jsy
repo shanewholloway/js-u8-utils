@@ -1,10 +1,11 @@
 import './unit/base2.jsy'
 import './unit/hex.jsy'
-import './unit/base64.jsy'
 import './unit/utf8.jsy'
 import './unit/json.jsy'
 import './unit/random.jsy'
 import './unit/buffer.jsy'
 
+import './unit/base64.jsy'
+import './unit/base64_u8.jsy'
 import './unit/base64_str_codec.jsy'
 import './unit/base64_u8_codec.jsy'

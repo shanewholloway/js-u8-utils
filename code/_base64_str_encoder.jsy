@@ -29,14 +29,12 @@ export function _base64_str_encoder(encode) ::
           out += encode[v&63]
           m = c = 0
 
-    if false !== done :: // when done is true or nullish
-      if 0 === m :: return null
-
+    if false !== done && 0 !== m :: // when done is true or nullish
       out += encode[1===m ? c << 4 : c << 2]
       if (!encode.no_pad)
         out += 2===m ? '=' : '=='
       m = c = 0
 
-    return out
+    return out ?? null
 
 

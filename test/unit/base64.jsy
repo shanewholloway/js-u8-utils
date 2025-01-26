@@ -1,25 +1,43 @@
-import {describe, it, assert} from '#test/bdd'
+import { describe, it, assert } from '#test/bdd'
 
-import { u8_to_base64, u8_to_base64url, base64_to_u8 } from 'u8-utils'
+import { utf8_to_u8, u8_to_base64, u8_to_base64url, base64_to_u8, base64url_to_u8 } from 'u8-utils'
 
-describe @ 'base64', @=> ::
-  const tc_u8 = new Uint8Array([75,245,231,251,102,40,5,58,69,131,9,108,85,174,67,161,207,139,2,3])
-  const tc_b64 = 'S/Xn+2YoBTpFgwlsVa5Doc+LAgM='
-  const tc_b64url = 'S_Xn-2YoBTpFgwlsVa5Doc-LAgM'
+import base64_test_tuples from './_base64_dataset.jsy'
 
-  it @ 'u8_to_base64', @=> ::
-    const b64 = u8_to_base64(tc_u8)
-    assert.equal(tc_b64, b64)
+describe @ 'base64', @::
+  const _as_u8 = v => v?.trim ? utf8_to_u8(v) : Uint8Array.from(v)
+  const assert_vec_equal = (a, b) =>
+    assert.deepEqual(Array.from(a), Array.from(b))
 
-  it @ 'u8_to_base64url', @=> ::
-    const b64url = u8_to_base64url(tc_u8)
-    assert.equal(tc_b64url, b64url)
+  for let [known_u8, known_b64, known_b64url] of base64_test_tuples ::
+    known_u8 = _as_u8(known_u8)
 
-  it @ 'base64_to_u8', @=> ::
-    const u8 = base64_to_u8(tc_b64)
-    assert.deepEqual(tc_u8, u8)
+    describe @ JSON.stringify(known_b64), @::
+      it @ 'encode decode', @=> ::
+        let test_u8 = base64_to_u8(u8_to_base64(known_u8))
+        assert_vec_equal(test_u8, known_u8)
 
-  it @ 'base64_to_u8 with url encoding', @=> ::
-    const u8 = base64_to_u8(tc_b64url)
-    assert.deepEqual(tc_u8, u8)
+      it @ 'encode base64', @=> ::
+        let test_b64 = u8_to_base64(known_u8)
+        assert.equal(test_b64, known_b64)
+
+      it @ 'encode base64url', @=> ::
+        let test_b64url = u8_to_base64url(known_u8)
+        assert.equal(test_b64url, known_b64url)
+
+      it @ 'decode base64', @=> ::
+        let test_u8 = base64_to_u8(known_b64)
+        assert_vec_equal(test_u8, known_u8)
+
+      it @ 'decode base64url', @=> ::
+        let test_u8 = base64url_to_u8(known_b64url)
+        assert_vec_equal(test_u8, known_u8)
+
+      it @ 'decode crossover b64 with b64url', @=> ::
+        let test_u8 = base64url_to_u8(known_b64)
+        assert_vec_equal(test_u8, known_u8)
+
+      it @ 'decode crossover b64url with b64', @=> ::
+        let test_u8 = base64_to_u8(known_b64url)
+        assert_vec_equal(test_u8, known_u8)
 

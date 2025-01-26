@@ -2,7 +2,7 @@ export function _base64_u8_encoder(encode) ::
   let m = 0,c = 0
   return (chunk, done) => ::
     if ! done :: // when done is false or nullish
-      let len = 0 | @ (4*chunk.byteLength + 2)/3
+      let len = 0 | @ 3 + chunk.length*4/3
       var i=0, u8b64_out = new Uint8Array(len)
 
       let u8, v
@@ -28,9 +28,7 @@ export function _base64_u8_encoder(encode) ::
           m = c = 0
 
 
-    if false !== done :: // when done is true or nullish
-      if 0 === m :: return null
-
+    if false !== done && 0 !== m :: // when done is true or nullish
       let e = encode[1===m ? c << 4 : c << 2]
       let tail = encode.no_pad ? [e]
         : 2===m ? [e, 61]
@@ -43,5 +41,5 @@ export function _base64_u8_encoder(encode) ::
       i += tail.length
       m = c = 0
 
-    return u8b64_out.subarray(0,i)
+    return u8b64_out?.subarray(0,i) ?? null
 
